@@ -13,3 +13,12 @@ Levels of info:
 Current focus: Defining a structure for the AI Vision model
 to analyze the page scan with, return the representation with distinct
 elements of the page.
+
+Idea: Make a list of elements in structured format, top to bottom left to right.
+
+Questions: Should I just have a key value pair system to extract things like header,
+page number, footer, main text, figures, etc? Or should I do a list of elements approach?
+
+
+For now: Lets move without elements, simple key value system for non advanced books,
+primarily main text books.
