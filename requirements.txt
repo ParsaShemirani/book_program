@@ -2,3 +2,4 @@ pydantic
 python-dotenv
 ruff
 openai
+pillow
