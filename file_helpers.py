@@ -10,7 +10,7 @@ def enumerate_files():
     ]
     file_paths_sorted = sorted(file_paths, key=lambda p: p.name)
 
-    scan_index = 0
+    scan_index = 1
     for f in file_paths_sorted:
         target_name = f.parent / f"{scan_index}{f.suffix}"
         f.rename(target=target_name)

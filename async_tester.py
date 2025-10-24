@@ -16,7 +16,6 @@ async def ai_response(openai_client: AsyncOpenAI, brand: str):
     print(f"RESPONSE DONE FOR: {brand}")
     print(response.output_text)
     print(10*"\n")
-    return response
 
 
 
@@ -35,3 +34,24 @@ async def create_task_method():
         task = asyncio.create_task(ai_response(openai_client=client, brand=brand))
         tasks.append(task)
     await asyncio.gather(*tasks)
+
+
+"""
+import asyncio
+
+async def worker(name, sem):
+    async with sem:  # acquire and release automatically
+        print(f"{name} is working...")
+        await asyncio.sleep(1)
+        print(f"{name} finished.")
+
+async def main():
+    sem = asyncio.Semaphore(2)  # allow only 2 concurrent workers
+
+    tasks = [worker(f"Worker {i}", sem) for i in range(5)]
+    await asyncio.gather(*tasks)
+
+asyncio.run(main())
+
+
+"""
