@@ -1,16 +1,9 @@
 import base64
-import os
 from enum import Enum
 
 from openai import OpenAI
+from openai.types.responses.parsed_response import ParsedResponse
 from pydantic import BaseModel
-from dotenv import load_dotenv
-
-load_dotenv()
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-if OPENAI_API_KEY is None:
-    raise (ValueError("TIMIDMAN"))
 
 with open("page_extraction_prompt.md", "r") as f:
     PAGE_EXTRACTION_PROMPT = f.read()
@@ -50,7 +43,7 @@ class PageExtraction(BaseModel):
     main_text: str | None
 
 
-def generate_extraction(openai_client: OpenAI, image_path: str):
+def generate_extraction(openai_client: OpenAI, image_path: str) -> ParsedResponse[PageExtraction]:
     base64_image = encode_image(image_path=image_path)
 
     response = openai_client.responses.parse(
@@ -77,26 +70,6 @@ def generate_extraction(openai_client: OpenAI, image_path: str):
     return response
 
 
-"""
-import json
-response_json = response.model_dump_json(indent = 2)
-parsed = response.output_parsed
-main_text = parsed.main_text
-"""
-
-
-"""
-with open("/Users/parsashemirani/Main/book_program/outputs/reminate11.md", "w") as f:
-    f.write(main_text)
-"""
-
-
-"""
-with open("/Users/parsashemirani/Main/book_program/outputs/timdust2.json", "w") as f:
-    f.write(response_json)
-"""
-
-
 def retrieve_parsed(response_json: dict):
     for output in response_json.get("output", []):
         contents = output.get("content") or []
@@ -104,3 +77,4 @@ def retrieve_parsed(response_json: dict):
             if isinstance(content, dict) and "parsed" in content:
                 return content["parsed"]
     return None
+

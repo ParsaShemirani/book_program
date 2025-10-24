@@ -1,0 +1,264 @@
+{
+  "id": "resp_0ef744017097b43d0068fb01ce0b0481909fd3ad1cd78ca50b",
+  "created_at": 1761280462.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-5-mini-2025-08-07",
+  "object": "response",
+  "output": [
+    {
+      "id": "rs_0ef744017097b43d0068fb01d100888190ae4c086b2d71df41",
+      "summary": [],
+      "type": "reasoning",
+      "content": null,
+      "encrypted_content": null,
+      "status": null
+    },
+    {
+      "id": "msg_0ef744017097b43d0068fb01e8faa88190b6984970d89feab0",
+      "content": [
+        {
+          "annotations": [],
+          "text": "{\n  \"blank\": false,\n  \"page_number\": 129,\n  \"header\": null,\n  \"footer\": null,\n  \"chapter\": {\n    \"number\": 9,\n    \"name\": \"Connecting Compassionately With Ourselves\"\n  },\n  \"figures\": [\n    {\n      \"type\": \"text\",\n      \"name\": null,\n      \"caption\": \"NVC's most important use may be in developing self-compassion.\"\n    }\n  ],\n  \"main_text\": \"> Let us become the change we seek in the world.\\n> —Mahatma Gandhi\\n\\nWe have seen how NVC contributes to relationships with friends and family, at work and in the political arena. Its most crucial application, however, may be in the way we treat ourselves. When we are internally violent toward ourselves, it is difficult to be genuinely compassionate toward others.\\n\\n## Remembering the Specialness of What We Are\\n\\nIn the play *A Thousand Clowns* by Herb Gardner, the protagonist refuses to release his twelve-year-old nephew to child-welfare authorities, declaring,\\n\\n> \\\"I want him to get to know exactly the special thing he is or else he won't notice it when it starts to go. I want him to stay awake . . . I want to be sure he sees all the wild possibilities. I want him to know it's worth all the trouble just to give the world a little goosing when you get the chance. And I want him to know the subtle, sneaky, important reason why he was born a human being and not a chair.\\\"\\n\\nI am gravely concerned that many of us have lost awareness of \\\"the special thing\\\" we are; we have forgotten the \\\"subtle, sneaky,\"\n}",
+          "type": "output_text",
+          "logprobs": [],
+          "parsed": {
+            "blank": false,
+            "page_number": 129,
+            "header": null,
+            "footer": null,
+            "chapter": {
+              "number": 9,
+              "name": "Connecting Compassionately With Ourselves"
+            },
+            "figures": [
+              {
+                "type": "text",
+                "name": null,
+                "caption": "NVC's most important use may be in developing self-compassion."
+              }
+            ],
+            "main_text": "> Let us become the change we seek in the world.\n> —Mahatma Gandhi\n\nWe have seen how NVC contributes to relationships with friends and family, at work and in the political arena. Its most crucial application, however, may be in the way we treat ourselves. When we are internally violent toward ourselves, it is difficult to be genuinely compassionate toward others.\n\n## Remembering the Specialness of What We Are\n\nIn the play *A Thousand Clowns* by Herb Gardner, the protagonist refuses to release his twelve-year-old nephew to child-welfare authorities, declaring,\n\n> \"I want him to get to know exactly the special thing he is or else he won't notice it when it starts to go. I want him to stay awake . . . I want to be sure he sees all the wild possibilities. I want him to know it's worth all the trouble just to give the world a little goosing when you get the chance. And I want him to know the subtle, sneaky, important reason why he was born a human being and not a chair.\"\n\nI am gravely concerned that many of us have lost awareness of \"the special thing\" we are; we have forgotten the \"subtle, sneaky,"
+          }
+        }
+      ],
+      "role": "assistant",
+      "status": "completed",
+      "type": "message"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 1.0,
+  "background": false,
+  "conversation": null,
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "reasoning": {
+    "effort": "medium",
+    "generate_summary": null,
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+    "format": {
+      "name": "PageExtraction",
+      "schema_": {
+        "$defs": {
+          "Chapter": {
+            "properties": {
+              "number": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Number"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              }
+            },
+            "required": [
+              "number",
+              "name"
+            ],
+            "title": "Chapter",
+            "type": "object",
+            "additionalProperties": false
+          },
+          "Figure": {
+            "properties": {
+              "type": {
+                "$ref": "#/$defs/FigureType"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Name"
+              },
+              "caption": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Caption"
+              }
+            },
+            "required": [
+              "type",
+              "name",
+              "caption"
+            ],
+            "title": "Figure",
+            "type": "object",
+            "additionalProperties": false
+          },
+          "FigureType": {
+            "enum": [
+              "image",
+              "table",
+              "plot",
+              "text",
+              "other"
+            ],
+            "title": "FigureType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "blank": {
+            "title": "Blank",
+            "type": "boolean"
+          },
+          "page_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page Number"
+          },
+          "header": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Header"
+          },
+          "footer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Footer"
+          },
+          "chapter": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Chapter"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "figures": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Figure"
+            },
+            "title": "Figures",
+            "type": "array"
+          },
+          "main_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Main Text"
+          }
+        },
+        "required": [
+          "blank",
+          "page_number",
+          "header",
+          "footer",
+          "chapter",
+          "figures",
+          "main_text"
+        ],
+        "title": "PageExtraction",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "type": "json_schema",
+      "description": null,
+      "strict": true
+    },
+    "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 2644,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 1972,
+    "output_tokens_details": {
+      "reasoning_tokens": 1600
+    },
+    "total_tokens": 4616
+  },
+  "user": null,
+  "billing": {
+    "payer": "developer"
+  },
+  "store": true
+}
