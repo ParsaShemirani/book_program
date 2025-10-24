@@ -1,10 +1,16 @@
+import os
 import base64
 import asyncio
 
 from openai import AsyncOpenAI
 from pydantic import BaseModel
 
-from secret_things import OPENAI_API_KEY
+from dotenv import load_dotenv
+
+load_dotenv()
+OPENAI_API_KEY = os.getenv(key="OPENAI_API_KEY")
+if OPENAI_API_KEY is None:
+    raise(ValueError("TIMIDMAN"))
 
 
 
