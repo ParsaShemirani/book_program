@@ -1,5 +1,5 @@
 pydantic
 python-dotenv
 ruff
-openai
+openai==2.6.0
 pillow

@@ -1,17 +1,14 @@
-import os
 from pathlib import Path
 from openai import OpenAI
 
 from dotenv import load_dotenv
 
-load_dotenv()
-OPENAI_API_KEY = os.getenv(key="OPENAI_API_KEY")
-if OPENAI_API_KEY is None:
-    raise(ValueError("TIMIDMAN"))
+from env_vars import OPENAI_API_KEY
 
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+### MUST REMOVE MAGIC VAR
 output_file_path = Path("/Users/parsashemirani/Main/book_program/outputs/speechify.mp3")
 
 
