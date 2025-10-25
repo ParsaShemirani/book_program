@@ -4,7 +4,7 @@ from pathlib import Path
 from openai import AsyncOpenAI
 
 from extractor import generate_extraction
-from env_vars import OPENAI_API_KEY, PAGE_SCAN_DIR, EXTRACTION_RESPONSE_DIR
+from env_vars import OPENAI_API_KEY, PAGE_SCAN_DIR, RESPONSE_DIR
 
 MAX_CONCURRENCY = 20
 
@@ -20,7 +20,7 @@ async def generate_and_save_extraction(
                 openai_client=openai_client, image_path=file_path
             )
             print(f"RESPONSE GENERATED, NOW WRITING OUTPUT FOR {file_path}")
-            output_path = EXTRACTION_RESPONSE_DIR / f"{file_path.stem}.json"
+            output_path = RESPONSE_DIR / f"{file_path.stem}.json"
             output_path.write_text(response.model_dump_json(indent=2, by_alias=True))
             return True
         except Exception as e:
@@ -52,7 +52,7 @@ async def main():
         result = task.result()
         results_string += f"{file_path.stem}: {str(result)}\n"
 
-    results_output_path = EXTRACTION_RESPONSE_DIR / "results.txt"
+    results_output_path = RESPONSE_DIR / "other" / "results.txt"
     results_output_path.write_text(results_string)
     print("Wrote results")
 
