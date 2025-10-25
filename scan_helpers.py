@@ -1,6 +1,8 @@
 import re
 from pathlib import Path
 
+from PIL import Image
+
 
 def digit_sorter(p: Path):
     stem = p.stem
@@ -27,3 +29,14 @@ def index_scans(dir: Path, starting_index: int):
         indexed_name = f.parent / f"{scan_index}{f.suffix.lower()}"
         f.rename(indexed_name)
         scan_index += 1
+
+def rotate_images(dir: Path, degrees: float):
+    file_paths = [
+        f for f in dir.glob("*")
+        if not f.name.startswith(".") and f.is_file()
+    ]
+
+    for f in file_paths:
+        image = Image.open(f)
+        image_rotated = image.rotate(angle=degrees, expand = True)
+        image_rotated.save(f)
