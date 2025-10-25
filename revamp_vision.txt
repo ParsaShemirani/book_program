@@ -1,0 +1,11 @@
+Currently, I am wondering how I will split apart the book
+into sections, considering that there are not only numbered
+chapters but also sections in the 'front and back matter' of the book.
+
+My first idea: Lets scan the book with scan 1 being the front cover and the last scan
+being the back cover. We will start by taking a look at the table of contents provided.
+We then use this table of contents to layout our 'sections' which include
+chapter, preface, index, etc. Then, we will include a list of these sections
+in the extraction prompts for the pages, and give each one a 'section id'.
+The model can identify if this is the start of a new section and give its id.
+This way, it can also identify non numerical sections like the preface.
