@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 OPENAI_API_KEY = os.getenv(key="OPENAI_API_KEY")
-PAGE_SCAN_DIR = Path(os.getenv(key="PAGE_SCAN_DIR"))
-RESPONSE_DIR = Path(os.getenv(key="RESPONSE_DIR"))
+BOOK_DIR = Path(os.getenv(key="BOOK_DIR"))
+PAGE_SCAN_DIR = BOOK_DIR / "page_scans"
+RESPONSE_DIR = BOOK_DIR / "responses"
 

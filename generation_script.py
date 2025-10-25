@@ -52,7 +52,7 @@ async def main():
         result = task.result()
         results_string += f"{file_path.stem}: {str(result)}\n"
 
-    results_output_path = RESPONSE_DIR / "other" / "results.txt"
+    results_output_path = BOOK_DIR / "results.txt"
     results_output_path.write_text(results_string)
     print("Wrote results")
 

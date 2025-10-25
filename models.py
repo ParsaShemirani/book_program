@@ -45,3 +45,6 @@ class Extraction(BaseModel):
     response: ParsedResponse
     page: Page
 
+class ChapterIndex(BaseModel):
+    scan_index: int
+    chapter: Chapter
