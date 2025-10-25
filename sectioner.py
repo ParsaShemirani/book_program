@@ -1,23 +1,22 @@
 import json
 
-from env_vars import BOOK_DIR
 from models import Section, SectionType
 
-SECTIONS_FILE = BOOK_DIR / "sections.json"
+from env_vars import SECTIONS_PATH
 
 
 def add_section(section):
-    json_str = SECTIONS_FILE.read_text()
+    sections_str = SECTIONS_PATH.read_text()
     try:
-        section_list = [Section.model_validate(s) for s in json.loads(json_str)]
+        section_list = [Section.model_validate(s) for s in json.loads(sections_str)]
     except json.decoder.JSONDecodeError:
         section_list = []
 
     section_list.append(section)
 
     dict_list = [s.model_dump() for s in section_list]
-    json_str = json.dumps(dict_list, indent=2)
-    SECTIONS_FILE.write_text(json_str)
+    updated_sections_str = json.dumps(dict_list, indent=2)
+    SECTIONS_PATH.write_text(updated_sections_str)
 
 
 def interactive_add_session():
