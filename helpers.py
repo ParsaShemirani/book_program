@@ -34,10 +34,10 @@ def rotate_images(degrees: float):
 # Reading extraction data
 
 
-def get_extractions() -> list[Extraction]:
+def get_extractions(directory: Path = RESPONSE_DIR) -> list[Extraction]:
     file_paths = [
         f
-        for f in RESPONSE_DIR.glob("*")
+        for f in directory.glob("*")
         if not f.name.startswith(".") and f.is_file()
     ]
     file_paths_sorted = sorted(file_paths, key=lambda p: int(p.stem))

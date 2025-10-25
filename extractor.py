@@ -40,9 +40,3 @@ async def generate_extraction(openai_client: AsyncOpenAI, image_path: str) -> Pa
     )
     return response
 
-
-def retrieve_page_extraction(response_json: str) -> Page:
-    json_text = response_json["output"][1]["content"][0]["text"]
-    page_extraction = Page.model_validate_json(json_text)
-    return page_extraction
-

@@ -3,6 +3,7 @@ from typing import Any
 
 from helpers import get_extractions
 from models import ChapterIndex
+from env_vars import BOOK_DIR
 
 extractions = get_extractions()
 
@@ -17,5 +18,5 @@ for e in extractions:
         )
 json_str = json.dumps(chapter_index_list, indent=2)
         
-
-        
+output_path = BOOK_DIR / "chapter_index.json"
+output_path.write_text(json_str)

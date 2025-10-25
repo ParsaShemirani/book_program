@@ -4,7 +4,7 @@ from pathlib import Path
 from openai import AsyncOpenAI
 
 from extractor import generate_extraction
-from env_vars import OPENAI_API_KEY, PAGE_SCAN_DIR, RESPONSE_DIR
+from env_vars import OPENAI_API_KEY, BOOK_DIR, PAGE_SCAN_DIR, RESPONSE_DIR
 
 MAX_CONCURRENCY = 20
 
@@ -45,7 +45,6 @@ async def main():
                 )
             )
             tasks.append((file_path, t))
-            
 
     results_string = ""
     for file_path, task in tasks:
@@ -55,8 +54,6 @@ async def main():
     results_output_path = BOOK_DIR / "results.txt"
     results_output_path.write_text(results_string)
     print("Wrote results")
-
-    
 
 
 asyncio.run(main())
