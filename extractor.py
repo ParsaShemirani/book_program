@@ -8,7 +8,7 @@ from models import Page, ParsedResponse
 from helpers import digit_sorter
 from env_vars import OPENAI_API_KEY, PAGE_EXTRACTION_PROMPT_PATH, RESPONSES_DIR, PAGE_SCANS_DIR, RESULTS_OUTPUT_PATH
 
-MAX_CONCURRENCY = 5
+MAX_CONCURRENCY = 20
 
 EXTRACTION_PROMPT = PAGE_EXTRACTION_PROMPT_PATH.read_text()
 
@@ -66,8 +66,6 @@ async def generate_and_save_extraction(
             return True
         except Exception:
             return False
-        
-
 
 
 async def main():
