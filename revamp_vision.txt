@@ -9,3 +9,6 @@ chapter, preface, index, etc. Then, we will include a list of these sections
 in the extraction prompts for the pages, and give each one a 'section id'.
 The model can identify if this is the start of a new section and give its id.
 This way, it can also identify non numerical sections like the preface.
+
+Also, I am pondering how to keep track of what data corresponds to what page scan.
+I can make a csv file which links response ID to scan id.
