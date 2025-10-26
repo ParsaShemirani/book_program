@@ -3,8 +3,9 @@ import asyncio
 from pathlib import Path
 
 from openai import AsyncOpenAI
+from openai.types.responses import ParsedResponse
 
-from models import Page, ParsedResponse
+from models import Page
 from helpers import digit_sorter
 from env_vars import OPENAI_API_KEY, PAGE_EXTRACTION_PROMPT_PATH, RESPONSES_DIR, PAGE_SCANS_DIR, RESULTS_OUTPUT_PATH
 

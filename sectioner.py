@@ -1,14 +1,15 @@
 import json
+from pathlib import Path
 
-from models import Section
+from openai.types.responses import ParsedResponse
 
-from env_vars import SECTIONS_PATH
+from models import Section, Page
+from env_vars import SECTIONS_PATH, RESPONSES_DIR
 
 
 def add_section(section):
-    sections_str = SECTIONS_PATH.read_text()
     try:
-        section_list = [Section.model_validate(s) for s in json.loads(sections_str)]
+        section_list = [Section.model_validate(s) for s in json.loads(SECTIONS_PATH.read_text())]
     except json.decoder.JSONDecodeError:
         section_list = []
 
@@ -20,10 +21,19 @@ def add_section(section):
 
 
 def interactive_add_session():
-    input_number = int(input("Section Number: "))
-    input_name = input("Section Name: ")
+    add_section(
+        Section(
+            number=int(input("Section Number: ")),
+            name=input("Section Name: "),
+            starting_scan_index=int(input("Starting Scan Index: ")),
+            ending_scan_index=input("Ending Scan Iddex: ")
+        )
+    )
 
-    
+
+
+
+
 
 if __name__ == "__main__":
     interactive_add_session()

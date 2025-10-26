@@ -1,7 +1,6 @@
 from enum import Enum
 
 from pydantic import BaseModel
-from openai.types.responses import ParsedResponse as ParsedResponse
 
 class Side(str, Enum):
     left = "left"
