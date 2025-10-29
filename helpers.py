@@ -5,7 +5,6 @@ from PIL import Image
 from openai.types.responses import ParsedResponse
 
 from models import Page
-from env_vars import RESPONSES_DIR
 
 def digit_sorter(p: Path):
     stem = p.stem
@@ -43,7 +42,7 @@ def rotate_images(dir: Path, degrees: float):
         image_rotated = image.rotate(angle=degrees, expand = True)
         image_rotated.save(f)
 
-
+"""
 def get_responses() -> list[ParsedResponse[Page]]:
     files = sorted(
         [f for f in RESPONSES_DIR.glob("*") if not f.name.startswith(".") and f.is_file()],
@@ -52,7 +51,7 @@ def get_responses() -> list[ParsedResponse[Page]]:
     return [
         ParsedResponse[Page].model_validate_json(f.read_text()) for f in files
     ]
-
+"""
 def print_tts_cost(len_characters: int):
     rate = 15/1000000
     cost = len_characters * rate

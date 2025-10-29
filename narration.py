@@ -7,7 +7,7 @@ from openai.types.responses import ParsedResponse
 
 from helpers import digit_sorter, print_tts_cost
 from models import Section, Page
-from env_vars import OPENAI_API_KEY, RESPONSES_DIR, SECTIONS_PATH, TEMP_DIR, BOOK_DIR
+from env_vars import OPENAI_API_KEY, RESPONSES_DIR, SECTIONS_PATH, BOOK_DIR
 
 MAX_SECTION_LENGTH = 2000
 
@@ -37,10 +37,6 @@ async def main():
             if main_text:
                 combined_main_text += 2*"\n" + main_text
         
-        print(combined_main_text[:200])
-        print_tts_cost(len_characters=len(combined_main_text))
-
-        break
 
         lines = combined_main_text.split("\n\n")
         split_counter = 0
