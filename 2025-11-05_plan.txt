@@ -1,0 +1,28 @@
+I want a simple CLI interface, and it accomodates the process
+from page scans to OpenAI repsonses, main text extraction,
+and narrating it into an audio file.
+
+I would like to save each of the 'middleman' steps for now.
+So once I have the scans in a directory, I can have the program
+make sub directories of that, each one containing a middleman step
+or the final result.
+
+## Process steps
+- Page scan -> OpenAI response
+- response -> main text
+- main text -> combine all main texts together
+- combined text -> text splits
+- text splits -> narration wav files
+- narration wav files -> single combined mp3
+
+## Sub directories and files
+- responses
+- main_text.md (The combination of all main texts from responses)
+- text_splits
+- narration_splits
+- narration.mp3
+
+## CLI interface
+- Takes the scans directory as an argument
+- Will perform all steps by default
+- Options allow stopping at a certain step

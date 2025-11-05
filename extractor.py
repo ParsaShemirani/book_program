@@ -8,8 +8,6 @@ from openai.types.responses import Response
 from helpers import get_sorted_files
 from env_vars import OPENAI_API_KEY, TEXT_EXTRACTION_PROMPT_PATH
 
-MAX_CONCURRENCY = 20
-
 EXTRACTION_PROMPT = TEXT_EXTRACTION_PROMPT_PATH.read_text()
 
 openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
@@ -20,8 +18,8 @@ def encode_image(image_path: Path) -> str:
         return base64.b64encode(image_file.read()).decode("utf-8")
 
 
-async def extract_text(file_path: Path) -> Response:
-    base64_image = encode_image(image_path=file_path)
+async def generate_extraction_response(scan_path: Path) -> Response:
+    base64_image = encode_image(image_path=scan_path)
 
     response = await openai_client.responses.create(
         model="gpt-5-mini",
@@ -45,55 +43,30 @@ async def extract_text(file_path: Path) -> Response:
     )
     return response
 
+async def generate_and_save_response(scan_path: Path, output_dir_path: Path) -> None:
+    response = await generate_extraction_response(scan_path)
+    output_file_path = output_dir_path / f"{scan_path.stem}.json"
+    output_file_path.write_text(response.model_dump_json(indent=2))
 
-async def extract_and_save_text(
-    file_path: Path, output_path: Path, sem: asyncio.Semaphore | None = None
-) -> bool:
-    if not sem:
-        sem = asyncio.Semaphore(1)
+async def generate_responses_dir(scan_dir_path: Path) -> None:
+    responses_dir_path = scan_dir_path / "responses"
+    responses_dir_path.mkdir()
 
-    async with sem:
-        try:
-            response = await extract_text(file_path=file_path)
-        except Exception as e:
-            print(
-                f"FAILIURE generating response for file path {file_path}.\nException: {e}"
-            )
-            return False
+    scan_paths = get_sorted_files(scan_dir_path)
 
-        try:
-            output_path.write_text(response.output_text)
-        except Exception as e:
-            print(f"FAILIURE writing text for file path {file_path}.\nException: {e}")
-            return False
-
-
-async def multiple_extract_and_save_text(
-    file_paths: list[Path], output_dir_path: Path
-) -> None:
-    sem = asyncio.Semaphore(MAX_CONCURRENCY)
     async with asyncio.TaskGroup() as tg:
-        for fp in file_paths:
+        for sp in scan_paths:
             tg.create_task(
-                extract_and_save_text(
-                    file_path=fp,
-                    output_path=output_dir_path / f"{fp.stem}.txt",
-                    sem=sem,
-                )
+                generate_and_save_response(sp, responses_dir_path)
             )
 
+def generate_main_text(scan_dir_path: Path) -> None:
+    response_paths = get_sorted_files(scan_dir_path / "responses")
+    responses = [Response.model_validate_json(rp.read_text()) for rp in response_paths]
 
-"""
-async def extract_dir_text(scan_dir: Path, output_dir: Path):
-    sorted_scan_paths = get_sorted_files(scan_dir)
+    main_text_list = [r.output_text for r in responses]
+    main_text = " ".join(main_text_list)
 
-    sem = asyncio.Semaphore(MAX_CONCURRENCY)
-    async with asyncio.TaskGroup() as tg:
-        for s in sorted_scan_paths:
-            tg.create_task(
-                extract_and_save_text(
-                    scan_path=s, output_path=(output_dir / f"{s.stem}.md"), sem=sem
-                )
-            )
-            
-"""
+    main_text_path = scan_dir_path / "main_text.md"
+    main_text_path.write_text(main_text)
+    
