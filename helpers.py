@@ -1,10 +1,12 @@
 import re
+import functools
 from pathlib import Path
 
 from PIL import Image
-from openai.types.responses import ParsedResponse
+from openai.types.responses import Response
 
-from models import Page
+from models import Page, ModelPricing
+
 
 def digit_sorter(p: Path):
     stem = p.stem
@@ -19,40 +21,44 @@ def digit_sorter(p: Path):
         )
 
 
-def index_scans(dir: Path, starting_index: int):
-    file_paths = [
-        f for f in dir.glob("*") if not f.name.startswith(".") and f.is_file()
-    ]
-    sorted_file_paths = sorted(file_paths, key=digit_sorter)
+def get_sorted_files(dir_path: Path) -> list[Path] | None:
+    file_paths = sorted(
+        [f for f in dir_path.glob("*") if not f.name.startswith(".") and f.is_file()],
+        key=digit_sorter,
+    )
+    if file_paths:
+        return file_paths
+    else:
+        return None
 
-    scan_index = starting_index
-    for f in sorted_file_paths:
-        indexed_name = f.parent / f"{scan_index}{f.suffix.lower()}"
-        f.rename(indexed_name)
-        scan_index += 1
 
-def rotate_images(dir: Path, degrees: float):
-    file_paths = [
-        f for f in dir.glob("*")
-        if not f.name.startswith(".") and f.is_file()
-    ]
+def rotate_images(dir_path: Path, degrees: float):
+    file_paths = get_sorted_files(dir_path=dir_path)
+    if not file_paths:
+        return None
 
     for f in file_paths:
         image = Image.open(f)
-        image_rotated = image.rotate(angle=degrees, expand = True)
+        image_rotated = image.rotate(angle=degrees, expand=True)
         image_rotated.save(f)
 
-"""
-def get_responses() -> list[ParsedResponse[Page]]:
-    files = sorted(
-        [f for f in RESPONSES_DIR.glob("*") if not f.name.startswith(".") and f.is_file()],
-        key=digit_sorter
+
+def calculate_response_cost(response: Response) -> float:
+    pricing: dict[str, ModelPricing] = {
+        "gpt-5-nano": ModelPricing(input_cost_per_1M=0.05, output_cost_per_1M=0.40),
+        "gpt-5-mini": ModelPricing(input_cost_per_1M=0.25, output_cost_per_1M=2.00),
+        "gpt-5": ModelPricing(input_cost_per_1M=1.25, output_cost_per_1M=10),
+    }
+    model_key = next((key for key in pricing if key in response.model), None)
+    if model_key is None:
+        raise KeyError(f"Pricing data not available for model: {response.model}")
+    model_pricing = pricing[model_key]
+
+    input_cost = response.usage.input_tokens * (
+        model_pricing.input_cost_per_1M / 1000000
     )
-    return [
-        ParsedResponse[Page].model_validate_json(f.read_text()) for f in files
-    ]
-"""
-def print_tts_cost(len_characters: int):
-    rate = 15/1000000
-    cost = len_characters * rate
-    print(f"Cost for {len_characters} characters: ${cost}")
+    output_cost = response.usage.output_tokens * (
+        model_pricing.output_cost_per_1M / 1000000
+    )
+    total_cost = input_cost + output_cost
+    return total_cost

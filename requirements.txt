@@ -3,3 +3,4 @@ python-dotenv
 ruff
 openai==2.6.0
 pillow
+typer

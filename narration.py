@@ -1,74 +1,72 @@
-import json
 import asyncio
+import subprocess
+from tempfile import TemporaryDirectory
 from pathlib import Path
 
-from openai import OpenAI, AsyncOpenAI
-from openai.types.responses import ParsedResponse
+from openai import AsyncOpenAI
 
-from helpers import digit_sorter, print_tts_cost
-from models import Section, Page
-from env_vars import OPENAI_API_KEY, RESPONSES_DIR, SECTIONS_PATH, BOOK_DIR
+from env_vars import OPENAI_API_KEY
+from helpers import get_sorted_files
 
-MAX_SECTION_LENGTH = 2000
+TARGET_SPLIT_LENGTH = 500
 
-async def create_narration(text: str, output_path: Path, openai_client: AsyncOpenAI):
+
+openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+
+
+
+
+async def narrate_text(text: str) -> bytes:
     response = await openai_client.audio.speech.with_raw_response.create(
-        model="tts-1",
-        voice="sage",
-        response_format="wav",
-        input=text
+        model="tts-1", voice="sage", response_format="wav", input=text
     )
-    output_path.write_bytes(response.content)
-    return True
+    return response.content
+
+
+async def narrate_and_save_text(text: str, output_path: Path):
+    try:
+        wav_bytes = await narrate_text(text=text)
+        output_path.write_bytes(wav_bytes)
+    except Exception as e:
+        print(f"FAILIURE FOR PATH {output_path}: {e}")
 
 
 
-async def main():
-    section_list = [Section.model_validate(s) for s in json.loads(SECTIONS_PATH.read_text())]
-    for s in section_list:
-        (BOOK_DIR / f"section_{s.number}").mkdir(exist_ok=True)
-        scan_index_rage = range(s.starting_scan_index, s.ending_scan_index + 1)
+async def split_narrate_save_text(file_path: Path):
+    text = file_path.read_text()
+    lines = text.split("\n\n")
+    text_splits: list[str] = [""]
 
-        combined_main_text = ""
-        for i in scan_index_rage:
-            response = ParsedResponse[Page].model_validate_json((RESPONSES_DIR / f"{i}.json").read_text())
+    for i, l in enumerate(lines):
+        last_split = text_splits[-1]
+        candidate = last_split + "\n\n" + l
+        if len(candidate) > TARGET_SPLIT_LENGTH:
+            text_splits.append(l)
+        else:
+            text_splits[-1] += l
 
-            main_text = response.output_parsed.main_text
-            if main_text:
-                combined_main_text += 2*"\n" + main_text
-        
+    text_splits = [ts for ts in text_splits if ts.strip()]
 
-        lines = combined_main_text.split("\n\n")
-        split_counter = 0
-        new_split = ""
-        text_splits: list[str] = []
-
-        openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-        for l in lines:
-            potential_split = new_split + "\n\n" + l
-            if len(potential_split) < MAX_SECTION_LENGTH:
-                new_split = potential_split
-            else:
-                text_splits.append(new_split)
-                new_split = l
-                split_counter +=1
-
-        openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-        split_counter = 0
+    with TemporaryDirectory() as tempdir:
         async with asyncio.TaskGroup() as tg:
-            for ts in text_splits:
-                print(f"Starting up: {split_counter}")
+            tempdir_path = Path(tempdir)
+            for i, ts in enumerate(text_splits, start=1):
                 tg.create_task(
-                    create_narration(
+                    narrate_and_save_text(
                         text=ts,
-                        output_path=BOOK_DIR / f"section_{s.number}" / f"{split_counter}.wav",
-                        openai_client=openai_client
+                        output_path=tempdir_path / f"{i}.wav"
                     )
                 )
-                split_counter += 1
+        wav_files = get_sorted_files(dir_path = tempdir_path)
+        concat_list_path = tempdir_path / "jamies.txt"
+        concat_list_str = ""
+        for f in wav_files:
+            concat_list_str += f"file '{str(f)}'\n"
+        concat_list_path.write_text(concat_list_str)
+
+        output_file_path = file_path.parent / f"{file_path.stem}.wav"
+
+        cmd = ["ffmpeg", "-f", "concat", "-safe", "0", "-i", str(concat_list_path), "-c", "copy", str(output_file_path)]
+        subprocess.run(cmd)
 
 
-        
-        
-if __name__ == "__main__":
-    asyncio.run(main())
